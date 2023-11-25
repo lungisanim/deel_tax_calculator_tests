@@ -4,6 +4,9 @@ using TaxCalculator.Data;
 using TaxCalculator.Models;
 using TaxCalculator.Service.Contract;
 using TaxCalculator.Service.Implementation;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+
 //TaxCalculatorUnitTests
 namespace TaxCalculatorUnitTests
 {
@@ -18,10 +21,12 @@ namespace TaxCalculatorUnitTests
         [SetUp]
         public void Setup()
         {
-            _logger = new Logger<TaxCalculator.Service.Implementation.TaxCalculator>(new LoggerFactory());
             var optionsBuilder = new DbContextOptionsBuilder<TaxCalculationContext>();
+            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=DeelDB;Trusted_Connection=True;"); 
 
-            DbContextOptions options = optionsBuilder.Options;
+            DbContextOptions<TaxCalculationContext> options = optionsBuilder.Options;
+            _taxContext = new TaxCalculationContext(options);
+            _logger = new Logger<TaxCalculator.Service.Implementation.TaxCalculator>(new LoggerFactory());
             _taxCalculator = new TaxCalculator.Service.Implementation.TaxCalculator(_logger, _taxContext);
         }
 
